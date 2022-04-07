@@ -69,6 +69,37 @@ python3 -m pip install git+https://github.com/sberdevices/smart_app_framework@ma
 python3 -m pip install git+https://github.com/sberdevices/smart_app_framework@main
 ```
 
+## Установка MacOS на M1
+
+```
+brew install librdkafka openssl@1.1 hdf5 python@3.9
+
+python3 -m venv venv && source venv/bin/activate
+
+pip3 install Cython numpy pkgconfig
+
+export PKG_CONFIG_PATH="$(brew --prefix)/opt/openssl@1.1/lib/pkgconfig:$(brew --prefix)/opt/librdkafka/lib/pkgconfig"
+
+
+GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 \
+GRPC_PYTHON_BUILD_SYSTEM_ZLIB=1 \
+CFLAGS="-I$(brew --prefix)/opt/hdf5/include $(pkg-config --cflags rdkafka openssl)" \
+LDFLAGS="-L$(brew --prefix)/opt/hdf5/lib $(pkg-config --libs rdkafka openssl)" \
+python3 setup.py build
+
+
+GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 \
+GRPC_PYTHON_BUILD_SYSTEM_ZLIB=1 \
+CFLAGS="-I$(brew --prefix)/opt/hdf5/include $(pkg-config --cflags rdkafka openssl)" \
+LDFLAGS="-L$(brew --prefix)/opt/hdf5/lib $(pkg-config --libs rdkafka openssl)" \
+python3 setup.py install
+
+
+CFLAGS="$(pkg-config --cflags rdkafka openssl)" \
+LDFLAGS="$(pkg-config --libs rdkafka openssl)" \
+pip3 wheel confluent_kafka==1.7.0
+```
+
 ## Создание проекта
 
 Для создания проекта выполните в терминале следующую команду:
